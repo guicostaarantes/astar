@@ -3,8 +3,13 @@ import { Path } from "../models/path";
 
 const svgNs = "http://www.w3.org/2000/svg";
 
-export const drawMap = (nodes: Map<NodeId, Node>, parent: HTMLDivElement, nodeClickHandler: (nodeId: NodeId) => () => void) => {
+const cleanUp: Array<() => void> = [];
+
+export const drawMap = (nodes: Map<NodeId, Node>, nodeClickHandler: (nodeId: NodeId) => () => void) => {
     const map = document.getElementById("map")!;
+    map.innerHTML = "";
+    cleanUp.forEach(clean => clean());'ß'
+
     const circles = [];
     const lines = [];
 
@@ -15,7 +20,9 @@ export const drawMap = (nodes: Map<NodeId, Node>, parent: HTMLDivElement, nodeCl
             circle.setAttribute("cy", String(node.y));
             circle.setAttribute("fill", "transparent");
             circle.setAttribute("r", "0.006");
-            circle.addEventListener("click", nodeClickHandler(nodeId))
+            const eventHandler = nodeClickHandler(nodeId);
+            circle.addEventListener("click", eventHandler);
+            cleanUp.push(() => circle.addEventListener("click", eventHandler));
             circles.push(circle);
             for (const id of node.linksTo) {
                 if (nodes.get(id)!.active) {
@@ -34,7 +41,6 @@ export const drawMap = (nodes: Map<NodeId, Node>, parent: HTMLDivElement, nodeCl
 
     lines.forEach(line => map.append(line));
     circles.forEach(circle => map.append(circle));
-    parent.appendChild(map);
 }
 
 export const drawOrigin = (nodes: Map<NodeId, Node>, nodeId: NodeId) => {
@@ -45,6 +51,7 @@ export const drawOrigin = (nodes: Map<NodeId, Node>, nodeId: NodeId) => {
     circle.setAttribute("fill", "green");
     circle.setAttribute("r", "0.006");
     map.append(circle);
+    return circle;
 }
 
 export const drawDestination = (nodes: Map<NodeId, Node>, nodeId: NodeId) => {
@@ -55,6 +62,7 @@ export const drawDestination = (nodes: Map<NodeId, Node>, nodeId: NodeId) => {
     circle.setAttribute("fill", "red");
     circle.setAttribute("r", "0.006");
     map.append(circle);
+    return circle;
 }
 
 export const drawPath = (nodes: Map<NodeId, Node>, paths: Map<NodeId, Path>, destination: NodeId) => {
@@ -75,4 +83,10 @@ export const drawPath = (nodes: Map<NodeId, Node>, paths: Map<NodeId, Path>, des
     polyline.setAttribute("stroke", "orange");
     polyline.setAttribute("stroke-width", "0.004");
     map.append(polyline);
+    return polyline;
+}
+
+export const eraseFromMap = (drawings: Array<SVGElement>) => {
+    const map = document.getElementById("map")!;
+    drawings.forEach(drawing => map.removeChild(drawing))
 }
