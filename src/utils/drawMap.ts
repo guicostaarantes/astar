@@ -1,4 +1,5 @@
 import { NodeId, Node } from "../models/node";
+import { Path } from "../models/path";
 
 const svgNs = "http://www.w3.org/2000/svg";
 
@@ -54,4 +55,24 @@ export const drawDestination = (nodes: Map<NodeId, Node>, nodeId: NodeId) => {
     circle.setAttribute("fill", "red");
     circle.setAttribute("r", "0.006");
     map.append(circle);
+}
+
+export const drawPath = (nodes: Map<NodeId, Node>, paths: Map<NodeId, Path>, destination: NodeId) => {
+    const map = document.getElementById("map")!;
+    let from = destination;
+    let to = paths.get(destination)!.comingFrom;
+    let points = "";
+    while (from !== to) {
+        points += `${nodes.get(from)!.x},${nodes.get(from)!.y} `
+        from = to;
+        to = paths.get(from)!.comingFrom;
+    }
+    points += `${nodes.get(to)!.x},${nodes.get(to)!.y}`
+
+    const polyline = document.createElementNS(svgNs, "polyline");
+    polyline.setAttribute("points", points);
+    polyline.setAttribute("fill", "transparent");
+    polyline.setAttribute("stroke", "orange");
+    polyline.setAttribute("stroke-width", "0.004");
+    map.append(polyline);
 }

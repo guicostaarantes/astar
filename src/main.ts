@@ -1,7 +1,8 @@
 import { NodeId } from './models/node';
 import './style.css'
+import calculateBestPath from './utils/calculateBestPath';
 import createSquareMap from './utils/createSquareMap'
-import { drawDestination, drawMap, drawOrigin } from './utils/drawMap';
+import { drawDestination, drawMap, drawOrigin, drawPath } from './utils/drawMap';
 
 const nodes = createSquareMap(30);
 
@@ -11,15 +12,16 @@ let origin: NodeId | undefined;
 let destination: NodeId | undefined;
 
 const nodeClickHandler = (nodeId: number) => () => {
-  if (!origin) {
+  if (origin === undefined) {
     drawOrigin(nodes, nodeId);
     origin = nodeId;
     return;
   }
-  if (!destination) {
+  if (destination === undefined) {
     drawDestination(nodes, nodeId);
     destination = nodeId;
-    return;
+    const paths = calculateBestPath(nodes, origin, destination);
+    drawPath(nodes, paths, destination);
   }
 }
 
