@@ -4,5 +4,4 @@ export type Path = {
     distanceToDestination: number;
     distanceTraveled: number;
     comingFrom: NodeId;
-    closed: boolean;
 };

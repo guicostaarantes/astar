@@ -13,11 +13,11 @@ const calculateBestPath = (nodes: Map<NodeId, Node>, origin: NodeId, destination
                 nodes.get(origin)!,
                 nodes.get(destination)!
             ),
-            closed: false,
         }
     )
 
     let calculatingFromNode: NodeId = origin;
+    let openPaths: Array<NodeId> = [origin];
 
     while (calculatingFromNode !== destination) {
         for (const id of nodes.get(calculatingFromNode)!.linksTo) {
@@ -31,23 +31,25 @@ const calculateBestPath = (nodes: Map<NodeId, Node>, origin: NodeId, destination
                             distanceTraveled: distanceTraveledUntilNode,
                             comingFrom: calculatingFromNode,
                             distanceToDestination: calculateDistance(nodes.get(id)!, nodes.get(destination)!),
-                            closed: false,
                         }
                     )
+                    openPaths.push(id)
                 }
             }
         }
 
-        paths.get(calculatingFromNode)!.closed = true;
+        openPaths = openPaths.filter(id => calculatingFromNode !== id)
+
+        if (openPaths.length === 0) {
+            throw new Error("No solution");
+        }
 
         let nextNodeToCalculate: NodeId = calculatingFromNode;
         let sumOfDistances;
-        for (const [nodeId, path] of paths) {
-            if (!path.closed) {
-                if (!sumOfDistances || sumOfDistances > paths.get(nodeId)!.distanceTraveled + paths.get(nodeId)!.distanceToDestination) {
-                    nextNodeToCalculate = nodeId;
-                    sumOfDistances = paths.get(nodeId)!.distanceTraveled + paths.get(nodeId)!.distanceToDestination;
-                }
+        for (const nodeId of openPaths) {
+            if (!sumOfDistances || sumOfDistances > paths.get(nodeId)!.distanceTraveled + paths.get(nodeId)!.distanceToDestination) {
+                nextNodeToCalculate = nodeId;
+                sumOfDistances = paths.get(nodeId)!.distanceTraveled + paths.get(nodeId)!.distanceToDestination;
             }
         }
 

@@ -20,10 +20,11 @@ const setMap = () => {
     }
     if (destination === undefined) {
       const destinationDrawing = drawDestination(nodes, nodeId);
+      drawings.push(destinationDrawing);
       destination = nodeId;
       const paths = calculateBestPath(nodes, origin, destination);
       const pathDrawing = drawPath(nodes, paths, destination);
-      drawings.push(destinationDrawing, pathDrawing);
+      drawings.push(pathDrawing);
     }
   }
 
