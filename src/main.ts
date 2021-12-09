@@ -9,7 +9,7 @@ let destination: NodeId | undefined;
 let drawings: Array<SVGElement> = [];
 
 const setMap = () => {
-  const nodes = createSquareMap(30);
+  const nodes = createSquareMap(80);
 
   const nodeClickHandler = (nodeId: number) => () => {
     if (origin === undefined) {

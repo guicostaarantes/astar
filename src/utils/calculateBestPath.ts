@@ -18,8 +18,10 @@ const calculateBestPath = (nodes: Map<NodeId, Node>, origin: NodeId, destination
 
     let calculatingFromNode: NodeId = origin;
     let openPaths: Array<NodeId> = [origin];
+    let counter = 0;
 
     while (calculatingFromNode !== destination) {
+        counter++;
         for (const id of nodes.get(calculatingFromNode)!.linksTo) {
             if (nodes.get(id)!.active) {
                 const existingPathToNode = paths.get(id);
@@ -41,7 +43,7 @@ const calculateBestPath = (nodes: Map<NodeId, Node>, origin: NodeId, destination
         openPaths = openPaths.filter(id => calculatingFromNode !== id)
 
         if (openPaths.length === 0) {
-            throw new Error("No solution");
+            throw new Error(`No solution found after ${counter} steps`);
         }
 
         let nextNodeToCalculate: NodeId = calculatingFromNode;
@@ -55,6 +57,9 @@ const calculateBestPath = (nodes: Map<NodeId, Node>, origin: NodeId, destination
 
         calculatingFromNode = nextNodeToCalculate;
     }
+
+    console.log(`Path found after ${counter} steps`)
+    console.log(`Path distance: ${paths.get(destination)!.distanceTraveled}`)
 
     return paths;
 }
