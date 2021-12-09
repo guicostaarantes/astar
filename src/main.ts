@@ -1,8 +1,14 @@
-import { NodeId } from './models/node';
-import './style.css'
-import calculateBestPath from './utils/calculateBestPath';
-import createSquareMap from './utils/createSquareMap'
-import { drawDestination, drawMap, drawOrigin, drawPath, eraseFromMap } from './utils/drawMap';
+import { NodeId } from "./models/node";
+import "./style.css";
+import calculateBestPath from "./utils/calculateBestPath";
+import createSquareMap from "./utils/createSquareMap";
+import {
+  drawDestination,
+  drawMap,
+  drawOrigin,
+  drawPath,
+  eraseFromMap,
+} from "./utils/drawMap";
 
 let origin: NodeId | undefined;
 let destination: NodeId | undefined;
@@ -26,10 +32,10 @@ const setMap = () => {
       const pathDrawing = drawPath(nodes, paths, destination);
       drawings.push(pathDrawing);
     }
-  }
+  };
 
   drawMap(nodes, nodeClickHandler);
-}
+};
 
 setMap();
 

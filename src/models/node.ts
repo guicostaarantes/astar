@@ -4,5 +4,5 @@ export type Node = {
   x: number;
   y: number;
   active: boolean;
-  linksTo: Array<NodeId>; 
-}
+  linksTo: Array<NodeId>;
+};
